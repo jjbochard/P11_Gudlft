@@ -2,6 +2,8 @@ import json
 
 from flask import Flask, flash, redirect, render_template, request, url_for
 
+MAX_PLACES_ALLOWED_PER_COMPETITION = 12
+
 
 def loadClubs():
     with open("clubs.json") as c:
@@ -38,7 +40,6 @@ def showSummary():
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
-    print(foundClub)
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
     if foundClub and foundCompetition:
         return render_template(
@@ -58,6 +59,10 @@ def purchasePlaces():
     clubPoints = int(club["points"])
     if placesRequired > clubPoints:
         flash(f"You cannot use more than your club points ({club['points']})")
+    elif placesRequired > MAX_PLACES_ALLOWED_PER_COMPETITION:
+        flash(
+            f"You cannot book more than {MAX_PLACES_ALLOWED_PER_COMPETITION} places per competiton"
+        )
     else:
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
