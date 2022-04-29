@@ -25,7 +25,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/showSummary", methods=["POST"])
+@app.route("/showSummary", methods=["POST", "GET"])
 def showSummary():
     try:
         club = [club for club in clubs if club["email"] == request.form["email"]][0]
@@ -38,6 +38,7 @@ def showSummary():
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
+    print(foundClub)
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
     if foundClub and foundCompetition:
         return render_template(
@@ -54,8 +55,14 @@ def purchasePlaces():
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
-    competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
-    flash("Great-booking complete!")
+    clubPoints = int(club["points"])
+    if placesRequired > clubPoints:
+        flash(f"You cannot use more than your club points ({club['points']})")
+    else:
+        competition["numberOfPlaces"] = (
+            int(competition["numberOfPlaces"]) - placesRequired
+        )
+        flash("Great-booking complete!")
     return render_template("welcome.html", club=club, competitions=competitions)
 
 
