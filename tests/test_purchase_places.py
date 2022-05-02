@@ -39,3 +39,19 @@ class TestClass:
         )
         message = f"Points available: {test_club['points']}"
         assert message in response.data.decode()
+
+    def test_book_places_in_past_competition(
+        self, client, test_club, test_past_competition
+    ):
+        response = client.post(
+            "/purchasePlaces",
+            data={
+                "competition": test_past_competition["name"],
+                "club": test_club["name"],
+                "places": 1,
+            },
+        )
+        assert response.status_code == 200
+        assert "You cannot book places in past competition" in response.data.decode()
+        message = f"Points available: {test_club['points']}"
+        assert message in response.data.decode()
