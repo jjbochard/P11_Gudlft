@@ -35,7 +35,9 @@ def showSummary():
     except IndexError:
         flash("Please enter a valid secretary email")
         return redirect("/")
-    return render_template("welcome.html", club=club, competitions=competitions)
+    return render_template(
+        "welcome.html", club=club, competitions=competitions, clubs=clubs
+    )
 
 
 @app.route("/book/<competition>/<club>")
