@@ -2,9 +2,7 @@ from server import MAX_PLACES_ALLOWED_PER_COMPETITION
 
 
 class TestClass:
-    def test_book_exceed_number_of_club_points(
-        self, client, test_club, test_competition
-    ):
+    def test_book_exceed_number_of_points(self, client, test_club, test_competition):
         response = client.post(
             "/purchasePlaces",
             data={
