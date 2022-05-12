@@ -13,12 +13,12 @@ def loadFile(file):
 
 def updateClubs(list_clubs, file_to_update):
     with open(file_to_update, "w") as c:
-        json.dump(list_clubs, c)
+        json.dump(list_clubs, c, indent=4)
 
 
 def updateCompetitions(list_competition, file_to_update):
     with open(file_to_update, "w") as c:
-        json.dump(list_competition, c)
+        json.dump(list_competition, c, indent=4)
 
 
 app = Flask(__name__)
