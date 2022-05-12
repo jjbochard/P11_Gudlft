@@ -34,3 +34,12 @@ def test_past_competition():
         "date": "2020-10-22 13:30:00",
         "numberOfPlaces": "13",
     }
+
+
+@pytest.fixture
+def tearDown():
+    yield
+    undo_purchase_place = [
+        {"name": "Simply Lift", "email": "john@simplylift.co", "points": "13"}
+    ]
+    server.updateClubs(undo_purchase_place, "tests/test_update_clubs.json")

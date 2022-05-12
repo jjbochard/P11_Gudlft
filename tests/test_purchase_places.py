@@ -10,10 +10,10 @@ class TestUnit:
             {"name": "She Lifts", "email": "kate@shelifts.co.uk", "points": "12"},
         ]
 
-        assert len(test_clubs) == 3
         assert test_clubs == expected_clubs
 
-    def test_update_clubs(self):
+    def test_update_clubs(self, tearDown):
+
         list_club_before_update = loadFile("tests/test_update_clubs.json")
         points_before_update = list_club_before_update[0]["points"]
         assert points_before_update == "13"
@@ -31,6 +31,7 @@ class TestUnit:
 
 class TestClass:
     def test_book_exceed_number_of_points(self, client, test_club, test_competition):
+        points_before_purchase = test_club["points"]
         response = client.post(
             "/purchasePlaces",
             data={
@@ -40,16 +41,12 @@ class TestClass:
             },
         )
         assert response.status_code == 200
-        assert (
-            f"You cannot use more than your club points ({test_club['points']})"
-            in response.data.decode()
-        )
-        message = f"Points available: {test_club['points']}"
-        assert message in response.data.decode()
+        assert test_club["points"] == points_before_purchase
 
     def test_book_exceed_number_of_points_per_competititon(
         self, client, test_club, test_competition
     ):
+        points_before_purchase = test_club["points"]
         response = client.post(
             "/purchasePlaces",
             data={
@@ -58,17 +55,14 @@ class TestClass:
                 "places": MAX_PLACES_ALLOWED_PER_COMPETITION + 1,
             },
         )
+
         assert response.status_code == 200
-        assert (
-            f"You cannot book more than {MAX_PLACES_ALLOWED_PER_COMPETITION} places per competiton"
-            in response.data.decode()
-        )
-        message = f"Points available: {test_club['points']}"
-        assert message in response.data.decode()
+        assert test_club["points"] == points_before_purchase
 
     def test_book_places_in_past_competition(
         self, client, test_club, test_past_competition
     ):
+        points_before_purchase = test_club["points"]
         response = client.post(
             "/purchasePlaces",
             data={
@@ -79,5 +73,4 @@ class TestClass:
         )
         assert response.status_code == 200
         assert "You cannot book places in past competition" in response.data.decode()
-        message = f"Points available: {test_club['points']}"
-        assert message in response.data.decode()
+        assert test_club["points"] == points_before_purchase
