@@ -1,4 +1,12 @@
-from server import MAX_PLACES_ALLOWED_PER_COMPETITION, loadFile, updateClubs
+from server import (
+    MAX_PLACES_ALLOWED_PER_COMPETITION,
+    club_has_enough_points,
+    loadFile,
+    placesIntoPoints,
+    pointsIntoPlaces,
+    updateClubs,
+    updateCompetitions,
+)
 
 
 class TestUnit:
@@ -12,21 +20,52 @@ class TestUnit:
 
         assert test_clubs == expected_clubs
 
-    def test_update_clubs(self, tearDown):
+    def test_update_clubs(self, tearDownClubs):
 
         list_club_before_update = loadFile("tests/test_update_clubs.json")
         points_before_update = list_club_before_update[0]["points"]
+        point_used = 1
         assert points_before_update == "13"
 
-        update_list_club_by_purchasing_one_place = [
+        update_list_club_by_using_one_points = [
             {"name": "Simply Lift", "email": "john@simplylift.co", "points": "12"}
         ]
         updateClubs(
-            update_list_club_by_purchasing_one_place, "tests/test_update_clubs.json"
+            update_list_club_by_using_one_points, "tests/test_update_clubs.json"
         )
         test_update_clubs = loadFile("tests/test_update_clubs.json")
-        expected_value = str(int(points_before_update) - 1)
+        expected_value = str(int(points_before_update) - point_used)
         assert test_update_clubs[0]["points"] == expected_value
+
+    def test_update_competitions(self, tearDownCompetitions):
+
+        list_competition_before_update = loadFile("tests/test_update_competitions.json")
+        places_before_update = list_competition_before_update[0]["places"]
+        place_purchased = 1
+        assert places_before_update == "25"
+
+        update_list_competition_by_purchasing_one_place = [
+            {"name": "Spring Festival", "date": "2023-03-27 10:00:00", "places": "24"}
+        ]
+        updateCompetitions(
+            update_list_competition_by_purchasing_one_place,
+            "tests/test_update_competitions.json",
+        )
+        test_update_competitions = loadFile("tests/test_update_competitions.json")
+        expected_value = str(int(places_before_update) - place_purchased)
+        assert test_update_competitions[0]["places"] == expected_value
+
+    def test_club_has_enough_points(self):
+        assert club_has_enough_points(3, 9) is True
+        assert club_has_enough_points(3, 3) is True
+        assert club_has_enough_points(3, 2) is False
+
+    def test_convert_points_into_places(self):
+        assert pointsIntoPlaces(3) == 1
+        assert pointsIntoPlaces(7) == 2
+
+    def test_convert_places_into_points(self):
+        assert placesIntoPoints(3) == 9
 
 
 class TestClass:
@@ -37,7 +76,7 @@ class TestClass:
             data={
                 "competition": test_competition["name"],
                 "club": test_club["name"],
-                "places": int(test_club["points"]) + 1,
+                "places": 2,
             },
         )
         assert response.status_code == 200

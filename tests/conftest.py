@@ -37,9 +37,20 @@ def test_past_competition():
 
 
 @pytest.fixture
-def tearDown():
+def tearDownClubs():
     yield
-    undo_purchase_place = [
+    undo_use_point = [
         {"name": "Simply Lift", "email": "john@simplylift.co", "points": "13"}
     ]
-    server.updateClubs(undo_purchase_place, "tests/test_update_clubs.json")
+    server.updateClubs(undo_use_point, "tests/test_update_clubs.json")
+
+
+@pytest.fixture
+def tearDownCompetitions():
+    yield
+    undo_purchase_place = [
+        {"name": "Spring Festival", "date": "2023-03-27 10:00:00", "places": "25"}
+    ]
+    server.updateCompetitions(
+        undo_purchase_place, "tests/test_update_competitions.json"
+    )
