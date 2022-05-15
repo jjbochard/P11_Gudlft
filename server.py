@@ -46,6 +46,11 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/clubs")
+def showClubs():
+    return render_template("clubs.html", clubs=clubs)
+
+
 @app.route("/showSummary", methods=["POST", "GET"])
 def showSummary():
     try:
@@ -105,9 +110,6 @@ def purchasePlaces():
     return render_template(
         "welcome.html", club=club, competitions=competitions, clubs=clubs
     )
-
-
-# TODO: Add route for points display
 
 
 @app.route("/logout")
