@@ -1,9 +1,9 @@
 click==7.1.2
-Flask==1.1.2
-itsdangerous==1.1.0
-Jinja2==2.11.2
-MarkupSafe==1.1.1
-Werkzeug==1.0.1
+Flask==2.0.0
+itsdangerous==2.0
+Jinja2==3.0
+MarkupSafe==2.0.0rc2
+Werkzeug==2.0.0
 pytest==7.1.1
 locust==2.8.6
 pre-commit==2.18.1

@@ -1,44 +1,24 @@
-import json
-from datetime import datetime
-
 from flask import Flask, flash, redirect, render_template, request, url_for
 
-MAX_PLACES_ALLOWED_PER_COMPETITION = 12
-POINTS_PER_PLACE = 3
-
-
-def loadFile(file):
-    with open(file) as f:
-        return json.load(f)
-
-
-def updateClubs(list_clubs, file_to_update):
-    with open(file_to_update, "w") as c:
-        json.dump(list_clubs, c, indent=4)
-
-
-def updateCompetitions(list_competition, file_to_update):
-    with open(file_to_update, "w") as c:
-        json.dump(list_competition, c, indent=4)
-
-
-def pointsIntoPlaces(points):
-    return points // POINTS_PER_PLACE
-
-
-def placesIntoPoints(places):
-    return places * POINTS_PER_PLACE
-
-
-def club_has_enough_points(points_used, clubs_points):
-    return points_used <= clubs_points
-
+from utils import (
+    MAX_PLACES_ALLOWED_PER_COMPETITION,
+    POINTS_PER_PLACE,
+    book_more_places_than_allowed,
+    club_has_enough_points,
+    is_past_competition,
+    load_file,
+    places_into_points,
+    points_into_places,
+    string_to_datetime,
+    update_clubs,
+    update_competitions,
+)
 
 app = Flask(__name__)
 app.secret_key = "something_special"
 
-competitions = loadFile("competitions.json")
-clubs = loadFile("clubs.json")
+competitions = load_file("competitions.json")
+clubs = load_file("clubs.json")
 
 
 @app.route("/")
@@ -85,17 +65,17 @@ def purchasePlaces():
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
     clubPoints = int(club["points"])
-    max_places = pointsIntoPlaces(clubPoints)
-    pointsUsed = placesIntoPoints(placesRequired)
+    max_places = points_into_places(clubPoints)
+    pointsUsed = places_into_points(placesRequired)
 
-    if datetime.now() > datetime.strptime(competition["date"], "%Y-%m-%d %H:%M:%S"):
+    if is_past_competition(string_to_datetime(competition["date"])):
         flash("You cannot book places in past competition")
     elif not club_has_enough_points(pointsUsed, clubPoints):
         flash(f"Your club has not enough points to purchase {placesRequired} places.")
         flash(
             f"You can purchase {max_places} place(s) maximum. ({POINTS_PER_PLACE} points per place)"
         )
-    elif placesRequired > MAX_PLACES_ALLOWED_PER_COMPETITION:
+    elif book_more_places_than_allowed(placesRequired):
         flash(
             f"You cannot book more than {MAX_PLACES_ALLOWED_PER_COMPETITION} places per competiton"
         )
@@ -104,8 +84,8 @@ def purchasePlaces():
             int(competition["numberOfPlaces"]) - placesRequired
         )
         club["points"] = str(int(club["points"]) - pointsUsed)
-        updateClubs(clubs, "clubs.json")
-        updateCompetitions(competitions, "competitions.json")
+        update_clubs(clubs, "clubs.json")
+        update_competitions(competitions, "competitions.json")
         flash("Great-booking complete!")
     return render_template(
         "welcome.html", club=club, competitions=competitions, clubs=clubs
