@@ -42,3 +42,35 @@ def is_past_competition(competition_date):
 
 def book_more_places_than_allowed(places):
     return places > MAX_PLACES_ALLOWED_PER_COMPETITION
+
+
+def book_at_least_one_place(places):
+    return places >= 1
+
+
+def copy_clubs_to_test():
+    with open("clubs.json", "r") as openfile:
+        list = json.load(openfile)
+
+    update_clubs(list, "tests/test_clubs.json")
+
+
+def copy_competitions_to_test():
+    with open("competitions.json", "r") as openfile:
+        list = json.load(openfile)
+
+    update_clubs(list, "tests/test_competitions.json")
+
+
+def copy_test_to_clubs():
+    with open("tests/test_clubs.json", "r") as openfile:
+        list = json.load(openfile)
+
+    update_clubs(list, "clubs.json")
+
+
+def copy_test_to_competitions():
+    with open("tests/test_competitions.json", "r") as openfile:
+        list = json.load(openfile)
+
+    update_clubs(list, "competitions.json")
