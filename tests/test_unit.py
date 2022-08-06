@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from utils import (
+    book_at_least_one_place,
     book_more_places_than_allowed,
     club_has_enough_points,
     is_past_competition,
@@ -92,3 +93,15 @@ def test_book_more_places_than_allowed():
 
 def test_book_less_places_than_allowed():
     assert book_more_places_than_allowed(9) is False
+
+
+def test_book_one_place():
+    assert book_at_least_one_place(1) is True
+
+
+def test_book_more_than_one_place():
+    assert book_at_least_one_place(2) is True
+
+
+def test_book_less_than_one_place():
+    assert book_at_least_one_place(0) is False
