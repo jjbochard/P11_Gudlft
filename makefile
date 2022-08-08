@@ -7,3 +7,6 @@ test:
 
 coverage:
 	coverage html
+
+functional:
+	pytest tests/tests_functional/tests_functional.py -s
