@@ -162,3 +162,13 @@ class TestClass:
         assert response.status_code == 200
         for m in messages:
             assert competition in response.data.decode()
+
+    def test_choose_wrong_competition_for_booking_places(self, client):
+        club = "Simply Lift"
+        competition = "Sping Festival"
+
+        response = client.get(
+            f"/book/{competition}/{club}",
+        )
+        assert response.status_code == 404
+        assert "Redirecting..." in response.data.decode()
