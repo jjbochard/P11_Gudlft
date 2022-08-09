@@ -3,6 +3,7 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 from utils import (
     MAX_PLACES_ALLOWED_PER_COMPETITION,
     POINTS_PER_PLACE,
+    book_at_least_one_place,
     book_more_places_than_allowed,
     club_has_enough_points,
     is_past_competition,
@@ -43,7 +44,7 @@ def showSummary():
     )
 
 
-@app.route("/book/<competition>/<club>")
+@app.route("/book/<competition>/<club>", methods=["GET"])
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
@@ -77,8 +78,10 @@ def purchasePlaces():
         )
     elif book_more_places_than_allowed(placesRequired):
         flash(
-            f"You cannot book more than {MAX_PLACES_ALLOWED_PER_COMPETITION} places per competiton"
+            f"You cannot book more than {MAX_PLACES_ALLOWED_PER_COMPETITION} places per competition"
         )
+    elif not book_at_least_one_place(placesRequired):
+        flash("You cannot book less than one place")
     else:
         competition["numberOfPlaces"] = str(
             int(competition["numberOfPlaces"]) - placesRequired

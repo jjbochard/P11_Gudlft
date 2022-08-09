@@ -6,4 +6,7 @@ MarkupSafe==2.0.0rc2
 Werkzeug==2.0.0
 pytest==7.1.1
 locust==2.8.6
+selenium==4.3.0
+pytest-mock==3.8.2
 pre-commit==2.18.1
+webdriver-manager==3.5.3
