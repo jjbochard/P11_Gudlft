@@ -4,6 +4,7 @@ from utils import (
     book_at_least_one_place,
     book_more_places_than_allowed,
     club_has_enough_points,
+    copy_file_a_to_file_b,
     is_past_competition,
     load_file,
     places_into_points,
@@ -15,7 +16,7 @@ from utils import (
 
 
 def test_load_file():
-    test_clubs = load_file("tests/test_clubs.json")
+    test_clubs = load_file("tests/files_test/test_clubs.json")
     expected_clubs = [
         {"name": "Simply Lift", "email": "john@simplylift.co", "points": "13"},
         {"name": "Iron Temple", "email": "admin@irontemple.com", "points": "4"},
@@ -27,7 +28,7 @@ def test_load_file():
 
 def test_update_clubs(tearDownClubs):
 
-    list_club_before_update = load_file("tests/test_update_clubs.json")
+    list_club_before_update = load_file("tests/files_test/test_update_clubs.json")
     points_before_update = list_club_before_update[0]["points"]
     point_used = 1
     assert points_before_update == "13"
@@ -35,15 +36,19 @@ def test_update_clubs(tearDownClubs):
     update_list_club_by_using_one_points = [
         {"name": "Simply Lift", "email": "john@simplylift.co", "points": "12"}
     ]
-    update_clubs(update_list_club_by_using_one_points, "tests/test_update_clubs.json")
-    test_update_clubs = load_file("tests/test_update_clubs.json")
+    update_clubs(
+        update_list_club_by_using_one_points, "tests/files_test/test_update_clubs.json"
+    )
+    test_update_clubs = load_file("tests/files_test/test_update_clubs.json")
     expected_value = str(int(points_before_update) - point_used)
     assert test_update_clubs[0]["points"] == expected_value
 
 
 def test_update_competitions(tearDownCompetitions):
 
-    list_competition_before_update = load_file("tests/test_update_competitions.json")
+    list_competition_before_update = load_file(
+        "tests/files_test/test_update_competitions.json"
+    )
     places_before_update = list_competition_before_update[0]["places"]
     place_purchased = 1
     assert places_before_update == "25"
@@ -53,9 +58,11 @@ def test_update_competitions(tearDownCompetitions):
     ]
     update_competitions(
         update_list_competition_by_purchasing_one_place,
-        "tests/test_update_competitions.json",
+        "tests/files_test/test_update_competitions.json",
     )
-    test_update_competitions = load_file("tests/test_update_competitions.json")
+    test_update_competitions = load_file(
+        "tests/files_test/test_update_competitions.json"
+    )
     expected_value = str(int(places_before_update) - place_purchased)
     assert test_update_competitions[0]["places"] == expected_value
 
@@ -105,3 +112,33 @@ def test_book_more_than_one_place():
 
 def test_book_less_than_one_place():
     assert book_at_least_one_place(0) is False
+
+
+def test_copy_file_a_to_file_b():
+
+    expected_file_a_before_copy = load_file("tests/files_test/file_a.json")
+    expected_file_b_before_copy = load_file("tests/files_test/file_b.json")
+
+    copy_file_a_to_file_b(
+        "tests/files_test/file_a.json", "tests/files_test/file_b.json"
+    )
+
+    expected_file_a_after_copy = load_file("tests/files_test/file_a.json")
+    expected_file_b_after_copy = load_file("tests/files_test/file_b.json")
+
+    assert expected_file_a_before_copy == [
+        {"name": "Simply Lift", "email": "john@simplylift.co", "points": "13"}
+    ]
+    assert expected_file_a_after_copy == [
+        {"name": "Iron Temple", "email": "admin@irontemple.com", "points": "4"}
+    ]
+    assert expected_file_b_before_copy == [
+        {"name": "Iron Temple", "email": "admin@irontemple.com", "points": "4"}
+    ]
+    assert expected_file_b_after_copy == [
+        {"name": "Simply Lift", "email": "john@simplylift.co", "points": "13"}
+    ]
+
+    copy_file_a_to_file_b(
+        "tests/files_test/file_a.json", "tests/files_test/file_b.json"
+    )
