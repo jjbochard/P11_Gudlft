@@ -48,29 +48,11 @@ def book_at_least_one_place(places):
     return places >= 1
 
 
-def copy_clubs_to_test():
-    with open("clubs.json", "r") as openfile:
-        list = json.load(openfile)
+def copy_file_a_to_file_b(file_a, file_b):
+    with open(file_a, "r") as openfile:
+        a = json.load(openfile)
+    with open(file_b, "r") as openfile:
+        b = json.load(openfile)
 
-    update_clubs(list, "tests/test_clubs.json")
-
-
-def copy_competitions_to_test():
-    with open("competitions.json", "r") as openfile:
-        list = json.load(openfile)
-
-    update_clubs(list, "tests/test_competitions.json")
-
-
-def copy_test_to_clubs():
-    with open("tests/test_clubs.json", "r") as openfile:
-        list = json.load(openfile)
-
-    update_clubs(list, "clubs.json")
-
-
-def copy_test_to_competitions():
-    with open("tests/test_competitions.json", "r") as openfile:
-        list = json.load(openfile)
-
-    update_clubs(list, "competitions.json")
+    update_clubs(a, file_b)
+    update_clubs(b, file_a)
