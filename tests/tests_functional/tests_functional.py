@@ -37,6 +37,14 @@ class TestClass:
 
         driver.close()
 
+    def test_see_clubs(self):
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        driver.get("http://127.0.0.1:5000/clubs")
+
+        assert driver.title == "Clubs Summary"
+
+        driver.close()
+
     def test_goto_book_page(self):
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         driver.get("http://127.0.0.1:5000/")
